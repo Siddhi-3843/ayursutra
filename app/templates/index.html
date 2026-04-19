@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- Welcome Header -->
+<div class="mb-8 flex justify-between items-center">
+    <div>
+        <h1 class="text-3xl font-bold text-green-800">
+            Welcome to AyurSutra 🌿
+        </h1>
+        <p class="text-gray-500 mt-1">{{ today }}</p>
+    </div>
+    <a href="/patients/add"
+       class="bg-green-700 text-white px-6 py-3 rounded-lg hover:bg-green-800 font-medium">
+        + Register Patient
+    </a>
+</div>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-3 gap-6 mb-8">
+
+    <div class="bg-white rounded-xl shadow p-6 border-l-4 border-green-500">
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-gray-500 text-sm">Total Patients</p>
+                <p class="text-4xl font-bold text-green-700 mt-1">
+                    {{ total_patients }}
+                </p>
+            </div>
+            <span class="text-4xl">👥</span>
+        </div>
+        <a href="/patients"
+           class="text-green-600 text-sm hover:underline mt-3 inline-block">
+            View all patients →
+        </a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6 border-l-4 border-amber-500">
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-gray-500 text-sm">Upcoming Sessions</p>
+                <p class="text-4xl font-bold text-amber-600 mt-1">0</p>
+            </div>
+            <span class="text-4xl">📅</span>
+        </div>
+        <p class="text-amber-500 text-sm mt-3">Coming in Step 4 🌿</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6 border-l-4 border-blue-500">
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-gray-500 text-sm">Completed Today</p>
+                <p class="text-4xl font-bold text-blue-600 mt-1">0</p>
+            </div>
+            <span class="text-4xl">✅</span>
+        </div>
+        <p class="text-blue-400 text-sm mt-3">Coming in Step 4 🌿</p>
+    </div>
+
+</div>
+
+<!-- Recent Patients Table -->
+<div class="bg-white rounded-xl shadow p-6 mb-6">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-gray-700">
+            Recently Registered Patients
+        </h2>
+        <a href="/patients"
+           class="text-green-600 text-sm hover:underline">
+            View all →
+        </a>
+    </div>
+
+    {% if recent_patients %}
+    <table class="w-full text-sm">
+        <thead>
+            <tr class="text-left text-gray-400 border-b">
+                <th class="pb-3">Name</th>
+                <th class="pb-3">Age</th>
+                <th class="pb-3">Gender</th>
+                <th class="pb-3">Department</th>
+                <th class="pb-3">Dosha</th>
+                <th class="pb-3">Registered</th>
+                <th class="pb-3">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in recent_patients %}
+            <tr class="border-b hover:bg-amber-50 transition">
+                <td class="py-3 font-medium text-green-800">
+                    {{ patient.name }}
+                </td>
+                <td class="py-3">{{ patient.age or '—' }}</td>
+                <td class="py-3">{{ patient.gender }}</td>
+                <td class="py-3">{{ patient.department or '—' }}</td>
+                <td class="py-3">
+                    {% if patient.dosha_type %}
+                        <span class="px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs">
+                            {{ patient.dosha_type }}
+                        </span>
+                    {% else %} — {% endif %}
+                </td>
+                <td class="py-3 text-gray-400">
+                    {{ patient.created_at.strftime('%d %b %Y') }}
+                </td>
+                <td class="py-3">
+                    <a href="/patients/{{ patient.id }}"
+                       class="text-green-700 hover:underline">
+                        View →
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+    <div class="text-center py-8 text-gray-400">
+        <p class="text-4xl mb-3">🌱</p>
+        <p>No patients registered yet.</p>
+        <a href="/patients/add"
+           class="text-green-600 hover:underline mt-2 inline-block">
+            Register first patient →
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- Quick Actions -->
+<div class="bg-white rounded-xl shadow p-6">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">Quick Actions</h2>
+    <div class="flex gap-4">
+        <a href="/patients/add"
+           class="bg-green-700 text-white px-6 py-3 rounded-lg hover:bg-green-800 font-medium">
+            + Add Patient
+        </a>
+        <a href="/patients"
+           class="bg-amber-600 text-white px-6 py-3 rounded-lg hover:bg-amber-700 font-medium">
+            View All Patients
+        </a>
+    </div>
+</div>
+
+{% endblock %}

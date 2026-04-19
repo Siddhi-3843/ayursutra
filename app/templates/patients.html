@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Patients{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-green-800">Patient Records 👥</h1>
+        <p class="text-gray-500 mt-1">All registered patients</p>
+    </div>
+    <a href="/patients/add"
+       class="bg-green-700 text-white px-5 py-2 rounded-lg hover:bg-green-800">
+        + Add New Patient
+    </a>
+</div>
+
+{% if patients %}
+<!-- Patients Table -->
+<div class="bg-white rounded-xl shadow overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-green-700 text-white">
+            <tr>
+                <th class="px-4 py-3 text-left">ID</th>
+                <th class="px-4 py-3 text-left">Name</th>
+                <th class="px-4 py-3 text-left">Age</th>
+                <th class="px-4 py-3 text-left">Gender</th>
+                <th class="px-4 py-3 text-left">Phone</th>
+                <th class="px-4 py-3 text-left">Department</th>
+                <th class="px-4 py-3 text-left">Dosha</th>
+                <th class="px-4 py-3 text-left">Registered</th>
+                <th class="px-4 py-3 text-left">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patients %}
+            <tr class="border-b hover:bg-amber-50 transition">
+                <td class="px-4 py-3 text-gray-400">#{{ patient.id }}</td>
+                <td class="px-4 py-3 font-medium text-green-800">
+                    {{ patient.name }}
+                </td>
+                <td class="px-4 py-3">{{ patient.age or '—' }}</td>
+                <td class="px-4 py-3">{{ patient.gender }}</td>
+                <td class="px-4 py-3">{{ patient.phone }}</td>
+                <td class="px-4 py-3">{{ patient.department or '—' }}</td>
+                <td class="px-4 py-3">
+                    {% if patient.dosha_type %}
+                        <span class="px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs">
+                            {{ patient.dosha_type }}
+                        </span>
+                    {% else %} — {% endif %}
+                </td>
+                <td class="px-4 py-3 text-gray-500">
+                    {{ patient.created_at.strftime('%d %b %Y') }}
+                </td>
+                <td class="px-4 py-3">
+                    <a href="/patients/{{ patient.id }}"
+                       class="text-green-700 hover:underline font-medium">
+                        View →
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+<!-- Empty State -->
+<div class="bg-white rounded-xl shadow p-12 text-center text-gray-400">
+    <p class="text-5xl mb-4">🌱</p>
+    <p class="text-lg">No patients yet.</p>
+    <a href="/patients/add"
+       class="text-green-700 hover:underline mt-2 inline-block">
+        Add your first patient →
+    </a>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AyurSutra - {% block title %}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-amber-50 min-h-screen">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-green-800 text-white px-6 py-4">
+        <div class="flex justify-between items-center">
+            <a href="/" class="text-xl font-bold">🌿 AyurSutra</a>
+            <div class="flex gap-6">
+                <a href="/" class="hover:text-amber-300">Dashboard</a>
+                <a href="/patients" class="hover:text-amber-300">Patients</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="mx-6 mt-4 p-3 rounded-lg
+                    {% if category == 'success' %}bg-green-100 text-green-800
+                    {% else %}bg-red-100 text-red-800{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-6 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-400 py-6 mt-10">
+        AyurSutra © 2024 - Panchakarma Management System
+    </footer>
+
+</body>
+</html>

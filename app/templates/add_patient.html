@@ -1,0 +1,427 @@
+{% extends "base.html" %}
+{% block title %}Add Patient{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-green-800">Register New Patient 🌿</h1>
+        <p class="text-gray-500 mt-1">Fill in the patient details below</p>
+    </div>
+
+    <!-- Form starts here -->
+    <form method="POST" action="/patients/add">
+
+        <!-- SECTION 1: Basic Information -->
+        <div class="bg-white rounded-xl shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold text-green-700 mb-4 border-b pb-2">
+                1. Basic Information
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Full Name <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="name" required
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. Rahul Sharma">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Age
+                    </label>
+                    <input type="number" name="age"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. 35">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Date of Birth
+                    </label>
+                    <input type="date" name="date_of_birth"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Gender <span class="text-red-500">*</span>
+                    </label>
+                    <select name="gender" required
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="">Select gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Contact Number <span class="text-red-500">*</span>
+                    </label>
+                    <input type="tel" name="phone" required
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. 9876543210">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Email (optional)
+                    </label>
+                    <input type="email" name="email"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. rahul@email.com">
+                </div>
+
+                <div class="col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Address
+                    </label>
+                    <input type="text" name="address"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. Pune, Maharashtra">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Emergency Contact Name
+                    </label>
+                    <input type="text" name="emergency_contact_name"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. Priya Sharma">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Emergency Contact Number
+                    </label>
+                    <input type="tel" name="emergency_contact_number"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. 9876543211">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 2: Visit Details -->
+        <div class="bg-white rounded-xl shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold text-green-700 mb-4 border-b pb-2">
+                2. Visit Details
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+
+                <div class="col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Reason for Visit / Symptoms
+                    </label>
+                    <textarea name="reason_for_visit" rows="3"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Describe main symptoms or reason for visit"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Department
+                    </label>
+                    <select name="department"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="">Select department</option>
+                        <option value="Panchakarma">Panchakarma</option>
+                        <option value="Kayachikitsa">Kayachikitsa</option>
+                        <option value="Shalakya">Shalakya</option>
+                        <option value="Prasuti">Prasuti Tantra</option>
+                        <option value="Balroga">Kaumarabhritya</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Appointment Date
+                    </label>
+                    <input type="date" name="appointment_date"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Dosha Type (Prakriti)
+                    </label>
+                    <select name="dosha_type"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="">Unknown / Not assessed</option>
+                        <option value="Vata">Vata</option>
+                        <option value="Pitta">Pitta</option>
+                        <option value="Kapha">Kapha</option>
+                        <option value="Vata-Pitta">Vata-Pitta</option>
+                        <option value="Pitta-Kapha">Pitta-Kapha</option>
+                        <option value="Vata-Kapha">Vata-Kapha</option>
+                        <option value="Tridosha">Tridosha</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 3: Medical History -->
+        <div class="bg-white rounded-xl shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold text-green-700 mb-4 border-b pb-2">
+                3. Medical History
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Taken treatment before?
+                    </label>
+                    <select name="taken_treatment_before"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Date of Last Treatment
+                    </label>
+                    <input type="date" name="date_of_last_treatment"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Previous Diagnosis
+                    </label>
+                    <input type="text" name="previous_diagnosis"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. Diabetes, Arthritis">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Previous Treatment Details
+                    </label>
+                    <input type="text" name="previous_treatment_details"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. Vamana, Basti">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 4: Ongoing Medicines -->
+        <div class="bg-white rounded-xl shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold text-green-700 mb-4 border-b pb-2">
+                4. Ongoing Medicines
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Currently taking medicines?
+                    </label>
+                    <select name="taking_medicines"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Medicine Name
+                    </label>
+                    <input type="text" name="medicine_name"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. Triphala, Ashwagandha">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Dosage
+                    </label>
+                    <input type="text" name="medicine_dosage"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. 500mg twice daily">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Duration (since when)
+                    </label>
+                    <input type="text" name="medicine_duration"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. 3 months">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 5: Allergies -->
+        <div class="bg-white rounded-xl shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold text-green-700 mb-4 border-b pb-2">
+                5. Allergies
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Do you have any allergies?
+                    </label>
+                    <select name="has_allergies"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Allergy Type
+                    </label>
+                    <select name="allergy_type"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="">Select type</option>
+                        <option value="Food">Food</option>
+                        <option value="Drug">Drug</option>
+                        <option value="Dust">Dust</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Allergy Description
+                    </label>
+                    <input type="text" name="allergy_description"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Describe the allergy">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 6: Physical Details -->
+        <div class="bg-white rounded-xl shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold text-green-700 mb-4 border-b pb-2">
+                6. Physical Details
+            </h2>
+            <div class="grid grid-cols-3 gap-4">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Height (cm)
+                    </label>
+                    <input type="number" name="height" id="height"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. 170" oninput="calculateBMI()">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Weight (kg)
+                    </label>
+                    <input type="number" name="weight" id="weight"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="e.g. 70" oninput="calculateBMI()">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        BMI (auto-calculated)
+                    </label>
+                    <input type="text" name="bmi" id="bmi" readonly
+                        class="w-full border rounded-lg px-3 py-2 bg-gray-50 text-green-700 font-bold"
+                        placeholder="Enter height & weight">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 7: Lifestyle -->
+        <div class="bg-white rounded-xl shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold text-green-700 mb-4 border-b pb-2">
+                7. Lifestyle
+            </h2>
+            <div class="grid grid-cols-3 gap-4">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Smoking
+                    </label>
+                    <select name="smoking"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Alcohol
+                    </label>
+                    <select name="alcohol"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Exercise Level
+                    </label>
+                    <select name="exercise_level"
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="Sedentary">Sedentary (No exercise)</option>
+                        <option value="Light">Light (1-2 days/week)</option>
+                        <option value="Moderate">Moderate (3-4 days/week)</option>
+                        <option value="Active">Active (5+ days/week)</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 8: Additional Notes -->
+        <div class="bg-white rounded-xl shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold text-green-700 mb-4 border-b pb-2">
+                8. Additional Information
+            </h2>
+            <textarea name="additional_notes" rows="4"
+                class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Any other important information about the patient..."></textarea>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="flex gap-4 mb-8">
+            <button type="submit"
+                class="bg-green-700 text-white px-8 py-3 rounded-lg hover:bg-green-800 font-medium text-lg">
+                Register Patient 🌿
+            </button>
+            <a href="/patients"
+                class="bg-gray-200 text-gray-700 px-8 py-3 rounded-lg hover:bg-gray-300 font-medium text-lg">
+                Cancel
+            </a>
+        </div>
+
+    </form>
+</div>
+
+<!-- BMI Calculator Script -->
+<script>
+function calculateBMI() {
+    const height = document.getElementById('height').value;
+    const weight = document.getElementById('weight').value;
+    if (height && weight) {
+        const h = height / 100;
+        const bmi = (weight / (h * h)).toFixed(2);
+        document.getElementById('bmi').value = bmi;
+    }
+}
+</script>
+{% endblock %}
