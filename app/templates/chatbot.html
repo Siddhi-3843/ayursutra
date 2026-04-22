@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% block title %}AyurBot - Ayurveda Assistant{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-6 text-center">
+        <h1 class="text-3xl font-bold text-green-800">
+            🌿 AyurBot
+        </h1>
+        <p class="text-gray-500 mt-1">
+            Your personal Ayurveda assistant
+        </p>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+
+        <!-- Chat Messages Area -->
+        <div id="chat-box"
+             class="h-96 overflow-y-auto p-6 space-y-4 bg-amber-50">
+
+            <!-- Welcome Message -->
+            <div class="flex gap-3">
+                <div class="w-8 h-8 bg-green-700 rounded-full flex items-center justify-center text-white text-sm flex-shrink-0">
+                    🌿
+                </div>
+                <div class="bg-white rounded-xl rounded-tl-none p-4 shadow-sm max-w-lg">
+                    <p class="text-gray-700">
+                        Namaste! 🙏 I am AyurBot, your Ayurveda assistant.
+                        I can help you with:
+                    </p>
+                    <ul class="mt-2 text-sm text-gray-600 space-y-1">
+                        <li>🌿 Panchakarma therapy information</li>
+                        <li>🍃 Dosha types and treatments</li>
+                        <li>🥗 Ayurvedic diet advice</li>
+                        <li>⚕️ Pre and post therapy precautions</li>
+                    </ul>
+                    <p class="mt-2 text-gray-700">
+                        How can I help you today?
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Suggested Questions -->
+        <div class="px-6 py-3 bg-white border-t">
+            <p class="text-xs text-gray-400 mb-2">Suggested questions:</p>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="askSuggested('What is Abhyanga therapy?')"
+                    class="text-xs bg-amber-50 text-amber-700 px-3 py-1 rounded-full hover:bg-amber-100 border border-amber-200">
+                    What is Abhyanga?
+                </button>
+                <button onclick="askSuggested('What are precautions after Shirodhara?')"
+                    class="text-xs bg-amber-50 text-amber-700 px-3 py-1 rounded-full hover:bg-amber-100 border border-amber-200">
+                    Shirodhara precautions?
+                </button>
+                <button onclick="askSuggested('What foods should Kapha dosha avoid?')"
+                    class="text-xs bg-amber-50 text-amber-700 px-3 py-1 rounded-full hover:bg-amber-100 border border-amber-200">
+                    Kapha diet advice?
+                </button>
+                <button onclick="askSuggested('What is Panchakarma?')"
+                    class="text-xs bg-amber-50 text-amber-700 px-3 py-1 rounded-full hover:bg-amber-100 border border-amber-200">
+                    What is Panchakarma?
+                </button>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <!-- Input Area -->
+        <div class="p-4 bg-white border-t flex gap-3 items-center">
+            <input type="text"
+                id="user-input"
+                placeholder="Ask me anything about Ayurveda..."
+                class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                onkeypress="handleKeyPress(event)">
+            <button type="button"
+                onclick="sendMessage()"
+                id="send-btn"
+                class="bg-green-700 text-white px-6 py-2 rounded-lg hover:bg-green-800 font-medium cursor-pointer">
+                Send 🌿
+            </button>
+        </div>
+
+    <!-- Disclaimer -->
+    <p class="text-center text-xs text-gray-400 mt-4">
+        AyurBot provides general Ayurveda information only.
+        Always consult a qualified Ayurveda doctor for medical advice.
+    </p>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Send message when Enter key is pressed
+function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
+}
+
+// Send suggested question
+function askSuggested(question) {
+    document.getElementById('user-input').value = question;
+    sendMessage();
+}
+
+// Main send message function
+async function sendMessage() {
+    const input = document.getElementById('user-input');
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    // Clear input
+    input.value = '';
+
+    // Show user message in chat
+    addMessage(message, 'user');
+
+    // Show loading indicator
+    addLoadingMessage();
+
+    // Disable send button while waiting
+    document.getElementById('send-btn').disabled = true;
+    document.getElementById('send-btn').textContent = '...';
+
+    try {
+        // Send to Flask backend
+        const response = await fetch('/chatbot/ask', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+
+        // Remove loading message
+        removeLoadingMessage();
+
+        if (data.answer) {
+            // Show AI response
+            addMessage(data.answer, 'bot');
+        } else {
+            addMessage('Sorry, I could not process your question. Please try again!', 'bot');
+        }
+
+    } catch (error) {
+        removeLoadingMessage();
+        addMessage('Connection error. Please check your internet and try again!', 'bot');
+    }
+
+    // Re-enable send button
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('send-btn').textContent = 'Send';
+}
+
+// Add message to chat window
+function addMessage(text, sender) {
+    const chatBox = document.getElementById('chat-box');
+
+    if (sender === 'user') {
+        chatBox.innerHTML += `
+            <div class="flex gap-3 justify-end">
+                <div class="bg-green-700 text-white rounded-xl rounded-tr-none p-4 shadow-sm max-w-lg">
+                    <p>${text}</p>
+                </div>
+                <div class="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-white text-sm flex-shrink-0">
+                    👤
+                </div>
+            </div>`;
+    } else {
+        // Format bot response (convert ** to bold, newlines to <br>)
+        let formatted = text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
+
+        chatBox.innerHTML += `
+            <div class="flex gap-3">
+                <div class="w-8 h-8 bg-green-700 rounded-full flex items-center justify-center text-white text-sm flex-shrink-0">
+                    🌿
+                </div>
+                <div class="bg-white rounded-xl rounded-tl-none p-4 shadow-sm max-w-lg">
+                    <p class="text-gray-700">${formatted}</p>
+                </div>
+            </div>`;
+    }
+
+    // Auto scroll to bottom
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Show loading dots while waiting for AI
+function addLoadingMessage() {
+    const chatBox = document.getElementById('chat-box');
+    chatBox.innerHTML += `
+        <div id="loading-msg" class="flex gap-3">
+            <div class="w-8 h-8 bg-green-700 rounded-full flex items-center justify-center text-white text-sm flex-shrink-0">
+                🌿
+            </div>
+            <div class="bg-white rounded-xl rounded-tl-none p-4 shadow-sm">
+                <div class="flex gap-1">
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-bounce" style="animation-delay:0.2s"></div>
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-bounce" style="animation-delay:0.4s"></div>
+                </div>
+            </div>
+        </div>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Remove loading dots
+function removeLoadingMessage() {
+    const loading = document.getElementById('loading-msg');
+    if (loading) loading.remove();
+}
+</script>
+{% endblock %}

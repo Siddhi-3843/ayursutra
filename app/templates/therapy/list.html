@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Therapy Sessions{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-green-800">Therapy Sessions 📅</h1>
+        <p class="text-gray-500 mt-1">All scheduled therapy sessions</p>
+    </div>
+    <a href="/therapy/add"
+       class="bg-green-700 text-white px-5 py-2 rounded-lg hover:bg-green-800">
+        + Schedule Session
+    </a>
+</div>
+
+{% if sessions %}
+<div class="bg-white rounded-xl shadow overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-green-700 text-white">
+            <tr>
+                <th class="px-4 py-3 text-left">Patient</th>
+                <th class="px-4 py-3 text-left">Therapy</th>
+                <th class="px-4 py-3 text-left">Therapist</th>
+                <th class="px-4 py-3 text-left">Date</th>
+                <th class="px-4 py-3 text-left">Time</th>
+                <th class="px-4 py-3 text-left">Duration</th>
+                <th class="px-4 py-3 text-left">Status</th>
+                <th class="px-4 py-3 text-left">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in sessions %}
+            <tr class="border-b hover:bg-amber-50 transition">
+                <td class="px-4 py-3 font-medium text-green-800">
+                    {{ session.patient.name }}
+                </td>
+                <td class="px-4 py-3">{{ session.therapy_name }}</td>
+                <td class="px-4 py-3">{{ session.therapist_name or '—' }}</td>
+                <td class="px-4 py-3">{{ session.session_date }}</td>
+                <td class="px-4 py-3">{{ session.session_time }}</td>
+                <td class="px-4 py-3">{{ session.duration_minutes }} mins</td>
+                <td class="px-4 py-3">
+                    {% if session.status == 'Scheduled' %}
+                        <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
+                            📅 Scheduled
+                        </span>
+                    {% elif session.status == 'In Progress' %}
+                        <span class="px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs">
+                            ⏳ In Progress
+                        </span>
+                    {% elif session.status == 'Completed' %}
+                        <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">
+                            ✅ Completed
+                        </span>
+                    {% elif session.status == 'Cancelled' %}
+                        <span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs">
+                            ❌ Cancelled
+                        </span>
+                    {% endif %}
+                </td>
+                <td class="px-4 py-3">
+                    <!-- Update Status Form -->
+                    <form method="POST" 
+                          action="/therapy/update-status/{{ session.id }}">
+                        <select name="status" onchange="this.form.submit()"
+                            class="text-xs border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-green-500">
+                            <option value="Scheduled" 
+                                {% if session.status == 'Scheduled' %}selected{% endif %}>
+                                Scheduled
+                            </option>
+                            <option value="In Progress"
+                                {% if session.status == 'In Progress' %}selected{% endif %}>
+                                In Progress
+                            </option>
+                            <option value="Completed"
+                                {% if session.status == 'Completed' %}selected{% endif %}>
+                                Completed
+                            </option>
+                            <option value="Cancelled"
+                                {% if session.status == 'Cancelled' %}selected{% endif %}>
+                                Cancelled
+                            </option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+<div class="bg-white rounded-xl shadow p-12 text-center text-gray-400">
+    <p class="text-5xl mb-4">📅</p>
+    <p class="text-lg">No sessions scheduled yet.</p>
+    <a href="/therapy/add"
+       class="text-green-700 hover:underline mt-2 inline-block">
+        Schedule first session →
+    </a>
+</div>
+{% endif %}
+{% endblock %}
