@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: ayursutra
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: SECRET_KEY
+        value: ayursutra-secret-key-2024
+      - key: FLASK_ENV
+        value: production
