@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block title %}Analytics & Charts{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <h1 class="text-3xl font-bold text-green-800">
+        Analytics & Reports 📊
+    </h1>
+    <p class="text-gray-500 mt-1">Visual insights about your clinic</p>
+</div>
+
+<!-- Row 1: Two charts side by side -->
+<div class="grid grid-cols-2 gap-6 mb-6">
+
+    <!-- Dosha Distribution -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">
+            🥧 Dosha Distribution
+        </h2>
+        <div class="relative h-64">
+            <canvas id="doshaChart"></canvas>
+        </div>
+        <p class="text-xs text-gray-400 text-center mt-2">
+            Patient distribution by Prakriti type
+        </p>
+    </div>
+
+    <!-- Session Status -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">
+            📋 Session Status
+        </h2>
+        <div class="relative h-64">
+            <canvas id="statusChart"></canvas>
+        </div>
+        <p class="text-xs text-gray-400 text-center mt-2">
+            Current therapy session statuses
+        </p>
+    </div>
+
+</div>
+
+<!-- Row 2: Full width charts -->
+<div class="grid grid-cols-1 gap-6 mb-6">
+
+    <!-- Patient Registration Trend -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">
+            📈 Patient Registration Trend (Last 7 Days)
+        </h2>
+        <div class="relative h-64">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Therapy Popularity -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">
+            📊 Most Popular Therapies
+        </h2>
+        <div class="relative h-64">
+            <canvas id="therapyChart"></canvas>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Color palettes
+const greenColors = [
+    '#166534', '#15803d', '#16a34a',
+    '#22c55e', '#4ade80', '#86efac', '#bbf7d0'
+];
+const amberColors = [
+    '#92400e', '#b45309', '#d97706',
+    '#f59e0b', '#fbbf24', '#fcd34d', '#fde68a'
+];
+
+// ─── Dosha Pie Chart ───────────────────────────
+fetch('/api/dosha-chart')
+    .then(res => res.json())
+    .then(data => {
+        if (data.labels.length === 0) {
+            document.getElementById('doshaChart')
+                .parentElement.innerHTML = 
+                '<p class="text-center text-gray-400 mt-20">No dosha data yet</p>';
+            return;
+        }
+        new Chart(document.getElementById('doshaChart'), {
+            type: 'pie',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    data: data.values,
+                    backgroundColor: greenColors,
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    });
+
+// ─── Status Doughnut Chart ─────────────────────
+fetch('/api/status-chart')
+    .then(res => res.json())
+    .then(data => {
+        if (data.labels.length === 0) {
+            document.getElementById('statusChart')
+                .parentElement.innerHTML = 
+                '<p class="text-center text-gray-400 mt-20">No session data yet</p>';
+            return;
+        }
+        const statusColors = {
+            'Scheduled': '#3b82f6',
+            'In Progress': '#f59e0b',
+            'Completed': '#22c55e',
+            'Cancelled': '#ef4444'
+        };
+        new Chart(document.getElementById('statusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    data: data.values,
+                    backgroundColor: data.labels.map(
+                        l => statusColors[l] || '#94a3b8'
+                    ),
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    });
+
+// ─── Patient Trend Line Chart ──────────────────
+fetch('/api/patient-trend')
+    .then(res => res.json())
+    .then(data => {
+        new Chart(document.getElementById('trendChart'), {
+            type: 'line',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'New Patients',
+                    data: data.values,
+                    borderColor: '#16a34a',
+                    backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#16a34a',
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    });
+
+// ─── Therapy Bar Chart ─────────────────────────
+fetch('/api/therapy-chart')
+    .then(res => res.json())
+    .then(data => {
+        if (data.labels.length === 0) {
+            document.getElementById('therapyChart')
+                .parentElement.innerHTML = 
+                '<p class="text-center text-gray-400 mt-20">No therapy data yet</p>';
+            return;
+        }
+        new Chart(document.getElementById('therapyChart'), {
+            type: 'bar',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Sessions',
+                    data: data.values,
+                    backgroundColor: amberColors,
+                    borderRadius: 8,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
