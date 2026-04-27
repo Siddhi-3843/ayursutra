@@ -86,3 +86,81 @@ def add_patient():
 def view_patient(patient_id):
     patient = Patient.query.get_or_404(patient_id)
     return render_template('view_patient.html', patient=patient)
+
+# ─── Edit patient ─────────────────────────────────
+@patients_bp.route('/edit/<int:patient_id>', methods=['GET', 'POST'])
+def edit_patient(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+
+    if request.method == 'POST':
+        # Update all fields
+        patient.name = request.form.get('name')
+        patient.age = request.form.get('age')
+        patient.date_of_birth = request.form.get('date_of_birth')
+        patient.gender = request.form.get('gender')
+        patient.phone = request.form.get('phone')
+        patient.email = request.form.get('email')
+        patient.address = request.form.get('address')
+        patient.emergency_contact_name = request.form.get('emergency_contact_name')
+        patient.emergency_contact_number = request.form.get('emergency_contact_number')
+        patient.reason_for_visit = request.form.get('reason_for_visit')
+        patient.department = request.form.get('department')
+        patient.appointment_date = request.form.get('appointment_date')
+        patient.dosha_type = request.form.get('dosha_type')
+        patient.taken_treatment_before = request.form.get('taken_treatment_before')
+        patient.previous_diagnosis = request.form.get('previous_diagnosis')
+        patient.previous_treatment_details = request.form.get('previous_treatment_details')
+        patient.date_of_last_treatment = request.form.get('date_of_last_treatment')
+        patient.taking_medicines = request.form.get('taking_medicines')
+        patient.medicine_name = request.form.get('medicine_name')
+        patient.medicine_dosage = request.form.get('medicine_dosage')
+        patient.medicine_duration = request.form.get('medicine_duration')
+        patient.has_allergies = request.form.get('has_allergies')
+        patient.allergy_type = request.form.get('allergy_type')
+        patient.allergy_description = request.form.get('allergy_description')
+        patient.smoking = request.form.get('smoking')
+        patient.alcohol = request.form.get('alcohol')
+        patient.exercise_level = request.form.get('exercise_level')
+        patient.additional_notes = request.form.get('additional_notes')
+
+        # Recalculate BMI
+        height = request.form.get('height')
+        weight = request.form.get('weight')
+        if height and weight:
+            h = float(height) / 100
+            w = float(weight)
+            patient.height = height
+            patient.weight = weight
+            patient.bmi = round(w / (h * h), 2)
+
+        db.session.commit()
+        flash(f'Patient {patient.name} updated successfully! ✅', 'success')
+        return redirect(url_for('patients.view_patient',
+                                patient_id=patient.id))
+
+    return render_template('edit_patient.html', patient=patient)
+
+
+# ─── Delete patient ───────────────────────────────
+@patients_bp.route('/delete/<int:patient_id>', methods=['POST'])
+def delete_patient(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+    patient.is_active = False  # Soft delete!
+    db.session.commit()
+    flash(f'Patient {patient.name} removed successfully!', 'success')
+    return redirect(url_for('patients.list_patients'))
+
+
+# ─── Search patients ──────────────────────────────
+@patients_bp.route('/search')
+def search_patients():
+    query = request.args.get('q', '')
+    if query:
+        patients = Patient.query.filter(
+            Patient.is_active == True,
+            Patient.name.ilike(f'%{query}%')
+        ).all()
+    else:
+        patients = []
+    return render_template('search_patients.html',
+                           patients=patients, query=query)

@@ -15,10 +15,23 @@
                 Registered: {{ patient.created_at.strftime('%d %B %Y') }}
             </p>
         </div>
-        <a href="/patients"
-           class="text-gray-500 hover:underline">
-            ← Back to list
-        </a>
+        <div class="flex gap-3">
+    <a href="/patients/edit/{{ patient.id }}"
+       class="bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 text-sm font-medium">
+        ✏️ Edit
+    </a>
+    <form method="POST" action="/patients/delete/{{ patient.id }}"
+          onsubmit="return confirm('Are you sure you want to remove this patient?')">
+        <button type="submit"
+            class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-sm font-medium">
+            🗑️ Delete
+        </button>
+    </form>
+    <a href="/patients"
+       class="text-gray-500 hover:underline self-center">
+        ← Back
+    </a>
+</div>
     </div>
 
     <!-- SECTION 1: Basic Information -->

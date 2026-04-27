@@ -45,3 +45,35 @@ def update_status(session_id):
     db.session.commit()
     flash(f'Session status updated to {new_status}! ✅', 'success')
     return redirect(url_for('therapy.list_sessions'))
+
+# ─── Edit therapy session ─────────────────────────
+@therapy_bp.route('/edit/<int:session_id>', methods=['GET', 'POST'])
+def edit_session(session_id):
+    session = TherapySession.query.get_or_404(session_id)
+    patients = Patient.query.filter_by(is_active=True).all()
+
+    if request.method == 'POST':
+        session.patient_id = request.form.get('patient_id')
+        session.therapy_name = request.form.get('therapy_name')
+        session.therapist_name = request.form.get('therapist_name')
+        session.session_date = request.form.get('session_date')
+        session.session_time = request.form.get('session_time')
+        session.duration_minutes = request.form.get('duration_minutes')
+        session.notes = request.form.get('notes')
+        session.status = request.form.get('status')
+
+        db.session.commit()
+        flash('Session updated successfully! ✅', 'success')
+        return redirect(url_for('therapy.list_sessions'))
+
+    return render_template('therapy/edit.html',
+                           session=session, patients=patients)
+
+# ─── Delete therapy session ───────────────────────
+@therapy_bp.route('/delete/<int:session_id>', methods=['POST'])
+def delete_session(session_id):
+    session = TherapySession.query.get_or_404(session_id)
+    db.session.delete(session)
+    db.session.commit()
+    flash('Session deleted successfully! 🗑️', 'success')
+    return redirect(url_for('therapy.list_sessions'))

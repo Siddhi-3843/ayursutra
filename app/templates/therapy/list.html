@@ -25,7 +25,8 @@
                 <th class="px-4 py-3 text-left">Time</th>
                 <th class="px-4 py-3 text-left">Duration</th>
                 <th class="px-4 py-3 text-left">Status</th>
-                <th class="px-4 py-3 text-left">Action</th>
+                <th class="px-4 py-3 text-left">Update</th>
+                <th class="px-4 py-3 text-left">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -39,6 +40,8 @@
                 <td class="px-4 py-3">{{ session.session_date }}</td>
                 <td class="px-4 py-3">{{ session.session_time }}</td>
                 <td class="px-4 py-3">{{ session.duration_minutes }} mins</td>
+
+                <!-- Status Badge -->
                 <td class="px-4 py-3">
                     {% if session.status == 'Scheduled' %}
                         <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
@@ -58,31 +61,39 @@
                         </span>
                     {% endif %}
                 </td>
+
+                <!-- Update Status Dropdown -->
                 <td class="px-4 py-3">
-                    <!-- Update Status Form -->
-                    <form method="POST" 
+                    <form method="POST"
                           action="/therapy/update-status/{{ session.id }}">
                         <select name="status" onchange="this.form.submit()"
                             class="text-xs border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-green-500">
-                            <option value="Scheduled" 
-                                {% if session.status == 'Scheduled' %}selected{% endif %}>
-                                Scheduled
-                            </option>
-                            <option value="In Progress"
-                                {% if session.status == 'In Progress' %}selected{% endif %}>
-                                In Progress
-                            </option>
-                            <option value="Completed"
-                                {% if session.status == 'Completed' %}selected{% endif %}>
-                                Completed
-                            </option>
-                            <option value="Cancelled"
-                                {% if session.status == 'Cancelled' %}selected{% endif %}>
-                                Cancelled
-                            </option>
+                            <option value="Scheduled" {% if session.status == 'Scheduled' %}selected{% endif %}>Scheduled</option>
+                            <option value="In Progress" {% if session.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                            <option value="Completed" {% if session.status == 'Completed' %}selected{% endif %}>Completed</option>
+                            <option value="Cancelled" {% if session.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
                         </select>
                     </form>
                 </td>
+
+                <!-- Edit and Delete Buttons -->
+                <td class="px-4 py-3">
+                    <div class="flex gap-2">
+                        <a href="/therapy/edit/{{ session.id }}"
+                           class="bg-amber-500 text-white px-2 py-1 rounded text-xs hover:bg-amber-600">
+                            ✏️ Edit
+                        </a>
+                        <form method="POST"
+                              action="/therapy/delete/{{ session.id }}"
+                              onsubmit="return confirm('Delete this session?')">
+                            <button type="submit"
+                                class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">
+                                🗑️
+                            </button>
+                        </form>
+                    </div>
+                </td>
+
             </tr>
             {% endfor %}
         </tbody>

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Search Patients{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-green-800">
+            Search Patients 🔍
+        </h1>
+    </div>
+
+    <!-- Search Box -->
+    <div class="bg-white rounded-xl shadow p-6 mb-6">
+        <form method="GET" action="/patients/search">
+            <div class="flex gap-3">
+                <input type="text"
+                       name="q"
+                       value="{{ query }}"
+                       placeholder="Search by patient name..."
+                       class="flex-1 border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg">
+                <button type="submit"
+                    class="bg-green-700 text-white px-8 py-3 rounded-lg hover:bg-green-800 font-medium">
+                    Search 🔍
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Search Results -->
+    {% if query %}
+        {% if patients %}
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+            <div class="px-6 py-3 bg-green-50 border-b">
+                <p class="text-green-700 font-medium">
+                    Found {{ patients|length }} patient(s) for "{{ query }}"
+                </p>
+            </div>
+            <table class="w-full text-sm">
+                <thead class="bg-green-700 text-white">
+                    <tr>
+                        <th class="px-4 py-3 text-left">Name</th>
+                        <th class="px-4 py-3 text-left">Age</th>
+                        <th class="px-4 py-3 text-left">Gender</th>
+                        <th class="px-4 py-3 text-left">Phone</th>
+                        <th class="px-4 py-3 text-left">Department</th>
+                        <th class="px-4 py-3 text-left">Dosha</th>
+                        <th class="px-4 py-3 text-left">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in patients %}
+                    <tr class="border-b hover:bg-amber-50 transition">
+                        <td class="px-4 py-3 font-medium text-green-800">
+                            {{ patient.name }}
+                        </td>
+                        <td class="px-4 py-3">{{ patient.age or '—' }}</td>
+                        <td class="px-4 py-3">{{ patient.gender }}</td>
+                        <td class="px-4 py-3">{{ patient.phone }}</td>
+                        <td class="px-4 py-3">{{ patient.department or '—' }}</td>
+                        <td class="px-4 py-3">
+                            {% if patient.dosha_type %}
+                            <span class="px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs">
+                                {{ patient.dosha_type }}
+                            </span>
+                            {% else %} — {% endif %}
+                        </td>
+                        <td class="px-4 py-3">
+                            <a href="/patients/{{ patient.id }}"
+                               class="text-green-700 hover:underline font-medium">
+                                View →
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+        <div class="bg-white rounded-xl shadow p-12 text-center text-gray-400">
+            <p class="text-4xl mb-4">🔍</p>
+            <p class="text-lg">No patients found for "{{ query }}"</p>
+            <p class="text-sm mt-2">Try a different name!</p>
+        </div>
+        {% endif %}
+
+    {% else %}
+    <div class="bg-white rounded-xl shadow p-12 text-center text-gray-400">
+        <p class="text-4xl mb-4">🔍</p>
+        <p class="text-lg">Type a name above to search!</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
